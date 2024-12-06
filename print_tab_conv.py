@@ -70,15 +70,15 @@ def tabulate_conv(dt, ds, Norm2, L2norm, NormMax, LMaxnorm, Norm1, L1norm, folde
     ds_values_str = '_'.join(map(str, np.round(ds, 6) ))
 
     # save plots to folder
-    if isinstance(dt, np.ndarray):
-        dt_values_str = '_'.join(map(str, np.round(dt, 6) ))
-        # file2write=open('da_plot/' + folder + '/varied_dt/lw-ex_plot_mu_' + str(c) + '_da_' + ds_values_str + '_dt_' + dt_values_str + '.txt' ,'w')
-        file2write=open(folder + '/solutions/order_table_' + '_da_' + ds_values_str + '_dt_' + dt_values_str + '.txt' ,'w')
-        # file2write.write(latex_table)
-        # file2write.close()
-    else:
-        # Save the plot to a file -- labels with da values and dt 
-        # file2write=open('da_plot/' + folder + '/fixed_dt/lw-ex_plot_mu_' + str(c) + '_da_' + ds_values_str + '_dt_' + str(dt) + '.txt'  , 'w')
-        file2write=open(folder + '/solutions/dt_' + str(dt) + '/order_table_' + '_da_' + ds_values_str + '_dt_' + str(dt) + '.txt' ,'w')
-    file2write.write(latex_table)
-    file2write.close()
+    # if isinstance(dt, np.ndarray):
+    #     dt_values_str = '_'.join(map(str, np.round(dt, 6) ))
+    #     # file2write=open('da_plot/' + folder + '/varied_dt/lw-ex_plot_mu_' + str(c) + '_da_' + ds_values_str + '_dt_' + dt_values_str + '.txt' ,'w')
+    #     file2write=open(folder + '/solutions/order_table_' + '_da_' + ds_values_str + '_dt_' + dt_values_str + '.txt' ,'w')
+    #     # file2write.write(latex_table)
+    #     # file2write.close()
+    # else:
+    #     # Save the plot to a file -- labels with da values and dt 
+    #     # file2write=open('da_plot/' + folder + '/fixed_dt/lw-ex_plot_mu_' + str(c) + '_da_' + ds_values_str + '_dt_' + str(dt) + '.txt'  , 'w')
+    #     file2write=open(folder + '/solutions/dt_' + str(dt) + '/order_table_' + '_da_' + ds_values_str + '_dt_' + str(dt) + '.txt' ,'w')
+    # file2write.write(latex_table)
+    # file2write.close()

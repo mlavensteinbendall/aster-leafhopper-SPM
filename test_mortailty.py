@@ -28,9 +28,9 @@ Tmax = 20
 order = 2       # order of method
 Ntest = 5       # number of cases
 
-k = 0
+k = 1
 
-par = 0.01
+par = 0
 
 # need to chose da and dt so that the last value in the array are Amax and Tmax
 da = np.zeros([Ntest]) # order smallest to largest
@@ -60,7 +60,7 @@ else:
     convergence_folder = 'fixed_dt'
 
 
-folder = 'convergence/' + testing_folder + '/' + function_folder + '/' + convergence_folder + '/'
+folder = 'convergence/' #+ testing_folder + '/' + function_folder + '/' + convergence_folder + '/'
 
 
 # Using the given da and dt values, this loop calculates the numerical solution, solve the analytical 

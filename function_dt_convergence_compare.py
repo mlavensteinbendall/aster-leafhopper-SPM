@@ -68,7 +68,7 @@ def convergence_dt_plt(Tmax, ds, dt, order, folder):
 
 
     # Save the plot to a file -- labels with da values and dt 
-    plt.savefig(folder + '/plots/dt_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt_values_str) + '.png', dpi=300)
+    # plt.savefig(folder + '/plots/dt_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt_values_str) + '.png', dpi=300)
     plt.show()
     plt.close()
 

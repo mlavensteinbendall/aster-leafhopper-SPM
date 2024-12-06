@@ -140,15 +140,15 @@ def conservation_plt(ds, c, Smax, Tmax, dt, order, folder, constant, hill_func):
     # Convert ds array values to a string
     ds_values_str = '_'.join(map(str, np.round(ds, 3) ))
 
+    # # if isinstance(dt, np.ndarray):
     # if isinstance(dt, np.ndarray):
-    if isinstance(dt, np.ndarray):
-        # plt.savefig('da_plot/'+ folder +'/varied_dt/lw-ex_plot_totPop_mu__ds_' + ds_values_str + '.png', dpi=300)
-        dt_values_str = '_'.join(map(str, np.round(dt, 3)))
-        plt.savefig(folder + '/plots/tot_pop_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt_values_str) + '.png', dpi=300)
+    #     # plt.savefig('da_plot/'+ folder +'/varied_dt/lw-ex_plot_totPop_mu__ds_' + ds_values_str + '.png', dpi=300)
+    #     dt_values_str = '_'.join(map(str, np.round(dt, 3)))
+    #     plt.savefig(folder + '/plots/tot_pop_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt_values_str) + '.png', dpi=300)
 
-    else:
-        # plt.savefig('da_plot/'+ folder +'/fixed_dt/lw-ex_plot_totPop_mu__ds_' + ds_values_str + '.png', dpi=300)  
-        plt.savefig(folder + '/plots/dt_' + str(dt) + '/tot_pop_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt) + '.png', dpi=300)
+    # else:
+    #     # plt.savefig('da_plot/'+ folder +'/fixed_dt/lw-ex_plot_totPop_mu__ds_' + ds_values_str + '.png', dpi=300)  
+    #     plt.savefig(folder + '/plots/dt_' + str(dt) + '/tot_pop_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt) + '.png', dpi=300)
  
     plt.show()
     plt.close()

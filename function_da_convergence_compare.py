@@ -73,7 +73,7 @@ def convergence_da_plt(Tmax, da, dt, order, folder):
     ds_values_str = '_'.join(map(str, np.round(da, 5) ))
 
     # Save the plot to a file -- labels with da values and dt  
-    plt.savefig(folder + '/plots/dt_' + str(dt) + '/da_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt) + '.png', dpi=300)
+    # plt.savefig(folder + '/plots/dt_' + str(dt) + '/da_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt) + '.png', dpi=300)
     plt.show()
     plt.close()
 
