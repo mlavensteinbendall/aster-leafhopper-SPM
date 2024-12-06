@@ -128,7 +128,7 @@ def convergence_da_plt(age_max, time_max, da, dt, order, m, b, constant, hill_fu
     # plt.show()
 
 from function_conservation import conservation_plt
-from print_tab_conv import tabulate_conv
+from function_convergence_table import tabulate_conv
 
 da = np.array([0.1, 0.05, 0.025, 0.0125, 0.00625])
 dt = 0.0001

@@ -3,10 +3,10 @@
 
 import numpy                        as np
 import matplotlib.pyplot            as plt 
-from function_numerical_method_to_files_npy import solveSPM_file_npy
+from function_model import solveSPM_file_npy
 # from function_numerical_method_to_files import solveSPM_file
 # from function_numerical_method          import solveSPM
-from function_mortality                 import mortality
+# from function_mortality                 import mortality
 from function_figures                   import plt_mortality_func, plt_reproduction_func, plt_total_pop, plt_boundary_condition, plt_numerical_sol
 import zipfile
 import re

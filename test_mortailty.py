@@ -12,9 +12,11 @@ import timeit
 from function_conservation_no_exact_sol import conservation_plt
 # from convergence_dt         import convergence_dt_plt
 # from convergence_da         import convergence_da_plt
-from function_dt_convergence_compare    import convergence_dt_plt
-from function_da_convergence_compare    import convergence_da_plt
-from print_tab_conv                 import tabulate_conv
+# from function_dt_convergence_compare    import convergence_dt_plt
+# from function_da_convergence_compare    import convergence_da_plt
+from function_convergence_table                 import tabulate_conv
+
+from function_convergence_compare import convergence_da_plt, convergence_dt_plt
 
 
 start = timeit.default_timer()

@@ -4,19 +4,19 @@
 import numpy                        as np
 import matplotlib.pyplot            as plt 
 import timeit
-from old.function_upwind_age        import UPW_SPM
+# from old.function_upwind_age        import UPW_SPM
 # from convergence_da         import convergence_da_plt
 # from function_conservation  import conservation_plt
 from function_conservation_no_exact_sol import conservation_plt
 # from convergence_dt         import convergence_dt_plt
-from function_dt_convergence_compare    import convergence_dt_plt
-from function_da_convergence_compare    import convergence_da_plt
+from old.function_dt_convergence_compare    import convergence_dt_plt
+from old.function_da_convergence_compare    import convergence_da_plt
 # from convergence_da         import convergence_da_plt
-from print_tab_conv                 import tabulate_conv
+from function_convergence_table                 import tabulate_conv
 # from function_numerical_method                    import solveSPM
 from function_figures                           import plt_mortality_func, plt_reproduction_func, plt_total_pop, plt_boundary_condition, plt_numerical_sol
 
-from function_mortality import mortality
+# from function_mortality import mortality
 
 
 start = timeit.default_timer()

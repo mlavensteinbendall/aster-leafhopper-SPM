@@ -2,7 +2,6 @@ from tabulate import tabulate
 import numpy as np
 
 
-
 def ensure_size(test, arr):
     """Adds zeros to the begginning of arrays to make sure they all have the number of tests that where performed
     
