@@ -24,17 +24,17 @@ def reproduction(N, age, da, par):
 
     for i in range(0, len(age)):
         # if age[i] > 15:                           #step function                           
-        #     reproduction_rate[i] = par            # constant 
+            # reproduction_rate[i] = par            # constant 
             # reproduction_rate[i] = par * age[i]   # linear 
 
-        reproduction_rate[i] =  par * np.exp(-(1/5000) * (age[i] - 18)**6)      # Gaussian
+        # reproduction_rate[i] =  par * np.exp(-(1/5000) * (age[i] - 18)**6)      # Gaussian
 
-        # reproduction_rate[i] = 1       # Logistic
+        reproduction_rate[i] = par / (1 + np.exp(-15 * (age[i] - 10.5)))       # Logistic
 
     return trapezoidal_rule(reproduction_rate * N, da)
 
 
-def solveSPM_file_npy(par, age, time, da, dt, k, type_k, filename, ntag, save_rate):
+def solveSPM(par, age, time, da, dt, k, type_k, filename, ntag, save_rate):
     """Calculates the numerical solution using strang splitting, lax-wendroff, and runge-kutta method. 
     
     Args:
@@ -90,8 +90,8 @@ def solveSPM_file_npy(par, age, time, da, dt, k, type_k, filename, ntag, save_ra
 
             Ntemp[a] = N[a] - (dt / 2) * first_central_diff + (dt**2 / 8) * second_central_diff
 
-        Ntemp[0] = N[1]
         Ntemp[-1] = N[-2]
+        Ntemp[0] = reproduction(Ntemp, age, da, k)
 
 
         # Step 2 -- full time-step to decrease populations based on age (Death)
@@ -115,21 +115,19 @@ def solveSPM_file_npy(par, age, time, da, dt, k, type_k, filename, ntag, save_ra
 
             N[a] = Ntemp2[a] - (dt / 2) * first_central_diff + (dt**2 / 8) * second_central_diff
 
+        # N[0] = Ntemp2[1]
+        N[-1] = Ntemp2[-2]
 
         # Boundary Condition
         # N[0]  = reproduction(N, age, da, k, type_k)
-        N[0] = reproduction(N, age, da, 0.09)
-        N[-1] = Ntemp2[-2]
-
-        # Ntemp[0] = N[0]
-        # Ntemp[-1] = N[-1]
-        # Ntemp = N
+        N[0] = reproduction(N, age, da, k)
 
         count +=1
 
     # Save the final time step
     np.save(os.path.join(temp_dir, f"step_{t}.npy"), N)
     print(time[t])
+    print(time[-1])
 
     # Combine all .npy files into a compressed .zip archive
     zip_filename = f"{filename}_results_{ntag}.zip"

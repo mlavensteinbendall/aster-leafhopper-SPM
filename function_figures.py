@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from function_trapezoidal_rule import trapezoidal_rule
-from function_reproduction import k_ind
+# from function_reproduction import k_ind
 
 
 def plt_mortality_func(age, mu, dt, folder):
@@ -24,7 +24,17 @@ def plt_reproduction_func(age, k, type_k, dt, folder):
 
     print('Plot mortality function')
 
-    reproduction_rate = k_ind(age, k, type_k)
+    reproduction_rate = np.full(len(age), 0.0)
+
+    for i in range(0, len(age)):
+        # if age[i] > 15:                           #step function                           
+            # reproduction_rate[i] = par            # constant 
+            # reproduction_rate[i] = par * age[i]   # linear 
+
+        # reproduction_rate[i] =  par * np.exp(-(1/5000) * (age[i] - 18)**6)      # Gaussian
+
+        reproduction_rate[i] = k / (1 + np.exp(-15 * (age[i] - 10.5)))       # Logistic
+
 
 
     plt.plot(age, reproduction_rate)

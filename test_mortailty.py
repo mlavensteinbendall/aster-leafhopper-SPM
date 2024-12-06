@@ -1,7 +1,7 @@
 
 import numpy                        as np
 import matplotlib.pyplot            as plt 
-from function_numerical_method_to_files_npy import solveSPM_file_npy, mortality
+from function_model import solveSPM
 from function_figures                   import plt_mortality_func, plt_reproduction_func, plt_total_pop, plt_boundary_condition, plt_numerical_sol
 import zipfile
 import re
@@ -16,8 +16,6 @@ from function_dt_convergence_compare    import convergence_dt_plt
 from function_da_convergence_compare    import convergence_da_plt
 from print_tab_conv                 import tabulate_conv
 
-from function_mortality import mortality
-
 
 start = timeit.default_timer()
 
@@ -28,9 +26,9 @@ Tmax = 20
 order = 2       # order of method
 Ntest = 5       # number of cases
 
-k = 1
+k = 0
 
-par = 0
+par = 0.01
 
 # need to chose da and dt so that the last value in the array are Amax and Tmax
 da = np.zeros([Ntest]) # order smallest to largest
@@ -90,7 +88,7 @@ for i in range(Ntest):
         print('CFL: ' + str(round(dt[i]/da[i], 5)))   
 
         # calculate solution
-        solveSPM_file_npy(par, age, time, da[i], dt[i], k, 'gaussian_reproduction', folder, i, 10)
+        solveSPM(par, age, time, da[i], dt[i], k, 'gaussian_reproduction', folder, i, 10)
 
             
     # ELSE da is varied and dt is constant, do this ------------------------------------------------
@@ -104,7 +102,7 @@ for i in range(Ntest):
         print('CFL: ' + str(round(dt/da[i], 5)))
 
         # calculate solution
-        solveSPM_file_npy(par, age, time, da[i], dt, k, 'gaussian_reproduction', folder, i, 20)
+        solveSPM(par, age, time, da[i], dt, k, 'gaussian_reproduction', folder, i, 20)
 
 
     # Specify the ZIP file and extraction directory

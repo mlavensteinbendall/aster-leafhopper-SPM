@@ -1,49 +1,6 @@
 import numpy as np # Numpy for numpy
-import math
 import matplotlib.pyplot as plt
-from tabulate import tabulate
 from function_trapezoidal_rule import trapezoidal_rule
-
-# def trapezoidal_rule(fx, dx):
-#     """Performs trapezoidal rule
-    
-#     Args:
-#         fx  (array):    A list of the population at different steps.
-#         dx  (int):      The partition of steps.
-        
-#     Returns:
-#         result  (array): Represents the time
-#     """
-
-#     fx_sum = np.sum(fx[1:-1])
-
-#     result = dx * ( (fx[0] + fx[-1]) / 2 + fx_sum)
-
-#     return result
-
-
-# def total_pop_time(Tmax, dt, ds):
-        
-#     for i in range(5):
-#         data = np.loadtxt('da_convergence/num_' + str(i) + '.txt') # Load in relevant data.
-#         time = np.arange(0, Tmax + dt, dt) 
-#         n = len(time)
-
-#         totalPop_num = np.zeros(n)
-
-#         for ii in range(n):
-
-#             totalPop_num[ii] = trapezoidal_rule( data[ii,:],     ds[i])
-#             print('Numerical total pop  = ' + str(totalPop_num[ii]))
-
-#         # time = np.arange(0, Tmax + dt, dt) 
-#         print('for data' + str(i) )
-#         plt.plot(time, totalPop_num)
-#         plt.ylabel('Total Pop')
-#         plt.xlabel('time')
-#         plt.show()
-        
-
 
 
 def conservation_plt(ds, c, Smax, Tmax, dt, order, folder, constant, hill_func):
@@ -157,49 +114,3 @@ def conservation_plt(ds, c, Smax, Tmax, dt, order, folder, constant, hill_func):
     # combine = [Norm1, L1norm]
 
     return Norm1, L1norm
-
-
-
-    # # Plot total population over time
-    # plt.plot(ds, totalPop_num)
-    # plt.xlabel('ds')
-    # plt.ylabel('total pop')
-    # plt.title('Total Population at final time')
-    # plt.show()
-
-# Test if convergence is working
-# Mesh options and dt
-# da = np.array([0.1, 0.05, 0.025, 0.0125, 0.00625])
-# # dt = 0.5 * da  # Time steps based on mesh size
-# dt = 0.0001
-
-# # Run the function with these parameters
-# Smax = 30.0  # Example Smax
-# order = 2   # Example order of accuracy
-# Tmax = 5
-
-# conservation_plt(5, da, 0.5, Smax, 5, dt, order, 'constant_mortality', True, False)
-
-# total_pop_time(Tmax, dt, da)
-
-
-
-
-
-
-
-
-        
-        # Exact solution 
-        # if c == 0:
-        # totalPop_sol = 0.5 * np.sqrt(np.pi) * (math.erf(Tmax + 5)  - math.erf(Tmax + 5 - Smax) ) # solution
-        # else:
-        # totalPop_sol = 0.5 * np.sqrt(np.pi) * np.exp(-c * Tmax) * ( math.erf(Smax + 5) - math.erf(Tmax + 5 - Smax)) # solution
-        
-        # if c == 0:
-        #     totalPop_sol = -0.5 * np.pi**(0.5) * ( math.erf(5 - Smax) - math.erf(5) ) # total population of initial condition
-        #     # totalPop_sol = -0.5 * np.pi**(0.5) * np.exp(-c * Tmax) * ( math.erf(Tmax + 5 - Smax) - math.erf(Tmax + 5) )
-        # else:
-        #     totalPop_sol = -0.5 * np.pi**(0.5) * np.exp(-c * Tmax) * ( math.erf(Tmax + 5 - Smax) - math.erf(Tmax + 5) ) # total population at end time 
-
-        # print('Exact total pop = ' + str(totalPop_sol))
