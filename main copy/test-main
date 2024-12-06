@@ -1,0 +1,99 @@
+import numpy                        as np
+import matplotlib.pyplot            as plt 
+import timeit
+from function_numerical_method             import solveSPM
+from function_figures                           import plt_total_pop, plt_boundary_condition, plt_numerical_sol
+
+from function_mortality import mortality
+
+print('hello')
+
+start = timeit.default_timer()
+
+## INITIAL CONDITIONS
+Amax = 30       # max age
+Tmax = 2
+order = 2       # order of method
+
+
+# Mortality set up
+m = 0.5            # constant for mux
+b = 0              # y-intercept
+
+# Reproduction set up
+k = 1
+
+da = np.zeros([1])
+da[0] = 2
+dt = 1
+
+
+testing_folder = 'mortality'
+function_folder = "no_mortality"
+convergence_folder = 'fixed_dt'
+
+
+folder = 'convergence/' + testing_folder + '/' + function_folder + '/' + convergence_folder
+
+
+# Using the given da and dt values, this loop calculates the numerical solution, solve the analytical 
+# solution, and plots the numerical vs. analytical solution. 
+# BEGIN LOOP ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+for i in range(1):
+
+    print('Entering loop ' + str(i))                # progress update, loop began
+
+    # initalize arrays
+    age = np.arange(0, Amax + da[i], da[i])       # array from 0 to Amax
+    # print(age)
+    Nage = len(age)                               # number of elements in age
+    print("age:", age[-1])                        # check that last element is Amax
+
+    mu = np.zeros(Nage)
+    mu = mortality(Amax, age, m, b, True, False, False)
+
+    # initalize arrays
+    time = np.arange(0, Tmax + dt, dt)           # array from 0 to Tmax
+    Ntime = len(time)                           # number of elements in time
+    print("Time:", time[-1])                    # check that the last element is Tmax
+
+    # initialize matrix
+    data = np.zeros([Ntime, Nage])
+
+    # print CFL
+    print('CFL: ' + str(round(dt/da[i], 5)))
+
+    # calculate solution
+    data = solveSPM(age, time, da[i], dt, mu, k, "none")                 # lax-wendroff method
+
+
+    np.savetxt(folder + 'num_0.txt', data)     # save data to file 
+
+    plot_indices = [0, Ntime // 2, Ntime - 1]
+    for t_index in plot_indices:
+        plt.plot(age, data[t_index, :], label=f'file Numerical at time  {round(time[t_index], 1)  }', linestyle='-')    # numerical 
+    # plt.plot(age, data2[t_index, :], label=f'Numerical at time  {round(time[t_index], 1)  }', linestyle='-')    # numerical 
+
+    plt.axhline(y=1, color='r', linestyle='--', label='y=1')
+    plt.xlabel('Age')
+    plt.ylabel('Population')
+    plt.title('Age Distribution of Population (' + r'$\Delta a$' + ' = ' + str(da) + ', ' + r'$\Delta t$' + ' = ' + str(dt) + ')')
+    plt.legend()
+    plt.show()        # show plot
+    plt.close()
+
+
+    # ## ANALYTICAL SOLUTION     
+    # # calculate the analytical solution for every age at time t
+    # for i_t in range(0, len(time)):
+
+    #     # initialize analytical solution matrix
+    #     sol = np.zeros([len(time),len(age)])
+
+    #     sol[i_t,:] = np.exp(-(age - ( time[i_t] + 5))**2) * np.exp( - mu * time[i_t])     # with advection -- CONSTANT
+
+ 
+    # plt_numerical_sol(True, sol, data, age, time, da, dt, Ntime, i, folder)
+
+    print('Loop ' + str(i) + ' Complete.')                      # progress update, loop end
+
