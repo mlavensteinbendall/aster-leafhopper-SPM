@@ -1,4 +1,3 @@
-
 import numpy                        as np
 import matplotlib.pyplot            as plt 
 from function_model import solveSPM
@@ -7,16 +6,10 @@ import zipfile
 import re
 
 import timeit
-# from convergence_da         import convergence_da_plt
-# from function_conservation  import conservation_plt
-# from function_conservation_no_exact_sol import conservation_plt
-# from convergence_dt         import convergence_dt_plt
-# from convergence_da         import convergence_da_plt
-# from function_dt_convergence_compare    import convergence_dt_plt
-# from function_da_convergence_compare    import convergence_da_plt
+from function_convergence_w_exact_sol import convergence_dt_plt, convergence_da_plt, conservation_plt
 from function_convergence_table                 import tabulate_conv
 
-from function_convergence import convergence_da_plt, convergence_dt_plt, conservation_plt
+# from function_convergence import convergence_da_plt, convergence_dt_plt, conservation_plt
 
 
 start = timeit.default_timer()
@@ -24,13 +17,13 @@ start = timeit.default_timer()
 ## INITIAL CONDITIONS
 Amax = 30       # max age
 # Tmax = 5     # max time
-Tmax = 20
+Tmax = 10
 order = 2       # order of method
 Ntest = 5       # number of cases
 
 k = 0
 
-par = 0.01
+par = 0
 
 # need to chose da and dt so that the last value in the array are Amax and Tmax
 da = np.zeros([Ntest]) # order smallest to largest
@@ -45,7 +38,7 @@ da[4] = 0.00625
 # da = 0.1 * da
 
 dt = 0.5 * da
-# dt = 0.01
+# dt = 0.001
 
 
 testing_folder = 'mortality'
@@ -104,7 +97,7 @@ for i in range(Ntest):
         print('CFL: ' + str(round(dt/da[i], 5)))
 
         # calculate solution
-        solveSPM(par, age, time, da[i], dt, k, 'gaussian_reproduction', folder, i, 20)
+        solveSPM(par, age, time, da[i], dt, k, 'gaussian_reproduction', folder, i, 10000)
 
 
     # Specify the ZIP file and extraction directory
@@ -133,16 +126,16 @@ for i in range(Ntest):
 
     print(data.shape)
 
-    plt.plot(age, data[0, :],  label=f'txt Numerical at time  {round(time[0] , 1)  }', linestyle='-') 
-    plt.plot(age, data[-1, :], label=f'txt Numerical at time  {round(time[-1], 1)  }', linestyle='-')    # numerical 
+    # plt.plot(age, data[0, :],  label=f'txt Numerical at time  {round(time[0] , 1)  }', linestyle='-') 
+    # plt.plot(age, data[-1, :], label=f'txt Numerical at time  {round(time[-1], 1)  }', linestyle='-')    # numerical 
 
-    plt.axhline(y=1, color='r', linestyle='--', label='y=1')
-    plt.xlabel('Age')
-    plt.ylabel('Population')
-    plt.title('Age Distribution of Population (' + r'$\Delta a$' + ' = ' + str(da[i]) + ', ' + r'$\Delta t$' + ' = ' + str(dt) + ')')
-    plt.legend()
-    plt.show()        # show plot
-    plt.close()
+    # plt.axhline(y=1, color='r', linestyle='--', label='y=1')
+    # plt.xlabel('Age')
+    # plt.ylabel('Population')
+    # plt.title('Age Distribution of Population (' + r'$\Delta a$' + ' = ' + str(da[i]) + ', ' + r'$\Delta t$' + ' = ' + str(dt) + ')')
+    # plt.legend()
+    # plt.show()        # show plot
+    # plt.close()
 
     print('Loop ' + str(i) + ' Complete.')                      # progress update, loop end
 
@@ -155,16 +148,19 @@ for i in range(Ntest):
 # Calculate and plot the convergence, returns an matrix with Norm2, L2norm, NormMax, and LMaxnorm
 if isinstance(dt, np.ndarray):
 #     # Norm2, L2norm, NormMax, LMaxnorm = convergence_dt_plt(Amax, Tmax, da, dt, order, m, b, constant_mortality, folder) 
-    Norm2, L2norm, NormMax, LMaxnorm = convergence_dt_plt(Tmax, da, dt, order, folder)
+    # Norm2, L2norm, NormMax, LMaxnorm = convergence_dt_plt(Tmax, da, dt, order, folder)
+    Norm2, L2norm, NormMax, LMaxnorm =convergence_dt_plt(Amax, Tmax, da, dt, order, par, folder)
 else:
 #     # Norm2, L2norm, NormMax, LMaxnorm = convergence_da_plt(Amax, Tmax, da, dt, order, m, b, constant_mortality, False, folder)
-    Norm2, L2norm, NormMax, LMaxnorm = convergence_da_plt(Tmax, da, dt, order, folder)
+    # Norm2, L2norm, NormMax, LMaxnorm = convergence_da_plt(Tmax, da, dt, order, folder)
+    Norm2, L2norm, NormMax, LMaxnorm =convergence_da_plt(Amax, Tmax, da, dt, order, par, folder)
 
 
 # ## TOTAL POPULATION ERROR --------------------------------------------------------------------------------
 # # Checks conservation, returns norm and order of conservation
 # # Norm1, L1norm = conservation_plt(Ntest, da, m, Amax, Tmax, dt, order, folder, constant, hill_func)   # only works for constant 
-Norm1, L1norm = conservation_plt(da, dt, order, folder)
+# Norm1, L1norm = conservation_plt(da, dt, order, folder)
+Norm1, L1norm = conservation_plt(da, par, Amax, Tmax, order, folder)
 
 
 # ## PRINT NORMS --------------------------------------------------------------------------------------------

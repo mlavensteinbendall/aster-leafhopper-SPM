@@ -127,7 +127,7 @@ def convergence_da_plt(age_max, time_max, da, dt, order, m, b, constant, hill_fu
     # # plt.savefig('plots/pop_plot-time' + str(n) + '-ds_'+ str(ds_index) +'.png') # Save the plot
     # plt.show()
 
-from function_conservation import conservation_plt
+from old.function_conservation import conservation_plt
 from function_convergence_table import tabulate_conv
 
 da = np.array([0.1, 0.05, 0.025, 0.0125, 0.00625])

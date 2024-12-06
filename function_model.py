@@ -118,15 +118,12 @@ def solveSPM(par, age, time, da, dt, k, type_k, filename, ntag, save_rate):
         N[-1] = Ntemp2[-2]
 
         # Boundary Condition
-        # N[0]  = reproduction(N, age, da, k, type_k)
         N[0] = reproduction(N, age, da, k)
 
         count +=1
 
     # Save the final time step
     np.save(os.path.join(temp_dir, f"step_{t}.npy"), N)
-    print(time[t])
-    print(time[-1])
 
     # Combine all .npy files into a compressed .zip archive
     zip_filename = f"{filename}_results_{ntag}.zip"
@@ -139,4 +136,4 @@ def solveSPM(par, age, time, da, dt, k, type_k, filename, ntag, save_rate):
         os.remove(os.path.join(temp_dir, file))
     os.rmdir(temp_dir)
 
-    print(count)
+    print(f"Number of iterations: {count}")

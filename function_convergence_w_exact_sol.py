@@ -1,11 +1,12 @@
 import numpy as np # Numpy for numpy
 import matplotlib.pyplot as plt
 from function_model import mortality
+import re
+import zipfile
 from function_trapezoidal_rule import trapezoidal_rule
 
-# from function_mortality import mortality
 
-def convergence_da_plt(age_max, time_max, da, dt, order, m, b, constant, hill_func, folder):
+def convergence_da_plt(age_max, time_max, da, dt, order, par, folder):
     """Calculates the convergence for varying ds and constant dt.
     
     Args:
@@ -22,7 +23,7 @@ def convergence_da_plt(age_max, time_max, da, dt, order, m, b, constant, hill_fu
         NormMax (array):    A list of the infinity-norms.
         LMaxnorm(array):    A list of the order of the infinity-norms.
     """
-    print('Calculate convergence varying da and fixing dt (using analytic solution)')
+    print('Calculate convergence using the analytic solution (fixed dt).')
 
     n = int(time_max/dt) + 1 # Time-step of comparison.
     Tend = n*dt # Get the associated timepoint value.
@@ -39,43 +40,32 @@ def convergence_da_plt(age_max, time_max, da, dt, order, m, b, constant, hill_fu
     for i in range(0, Ntest):
 
         # initialize values
-        age = np.arange(0, age_max + da[i], da[i])      # array from 0 to age_max
+        age_num_points = int(age_max / da[i]) + 1
+        age = np.linspace(0, age_max, age_num_points)
         Nage = len(age)                                 # number of elements in age
 
         mu = np.zeros(Nage)
         mu = mortality(age, par)
 
-        data = np.zeros([int(time_max/da[i]), Nage])    # initialize matrix for numerical solution
+        data = np.zeros([Nage])    # initialize matrix for numerical solution
         sol = np.zeros([Nage])                          # initialize array for analytical solution
 
         # Numerical solution -- download relevent data
-        data = np.loadtxt(f'{folder}/solutions/dt_{dt}/num_{i}.txt') 
-        # data = np.loadtxt('da_convergence/num_' + str(i) + '.txt') # Load in relevant data.
+        data = last_time_solution(folder, i)
 
         # Analyticial solution -- changes for what ds is
-        # sol = np.exp(-(age - ( Tend + 5))**2) * np.exp( - mu * Tend)    # with advection 
+        sol = np.exp(-(age - ( Tend + 5))**2) * np.exp( - mu * Tend)    # with advection 
         # sol = np.exp(-(age - 5)**2) * np.exp( - mu * Tend)            # without advection        
         # sol = np.exp(-(age - ( Tend + 5))**2) * np.exp(- (30 * np.log(age**2 + 30**2) - 30 * np.log((age - Tend)**2 +30**2))) # with advection -- hill function
 
-        if constant == True:
-            sol = np.exp(-(age - ( Tend + 5))**2) * np.exp( - mu * Tend)     # with advection -- CONSTANT
-        else:
-            if hill_func == True:
-                sol = np.exp(-(age - ( Tend + 5))**2) * np.exp(- (30 * np.log(age**2 + 30**2) - 30 * np.log((age - Tend)**2 +30**2))) # with advection -- hill function
-                # sol = np.exp(-(age - (Tend + 5))**2) / ((age**2 + 30**2) / ((age - Tend)**2 + 30**2))**30
-
-            else:
-                sol = np.exp(-(age - ( Tend + 5))**2) * np.exp(- m * (age )* Tend + 0.5 * m * (Tend)**2)     # with advection -- NON CONSTANT
-
-        
-        # # plt data vs sol
-        # plt.plot(step,data[-1,:]) 
-        # plt.plot(step,sol) # looks right
-        # plt.show()
+        # plt data vs sol
+        plt.plot(age,data[:]) 
+        plt.plot(age,sol) # looks right
+        plt.show()
 
         # Calculate the norm 
-        Norm2[i]    = ( ( 1 / Nage ) * np.sum( np.abs( data[-1,:] - sol[:] ) **2 ) ) **0.5  # L2 error.
-        NormMax[i]  = np.max( np.abs( data[-1,:] - sol[:] ) )                               # L-Max error.
+        Norm2[i]    = ( ( 1 / Nage ) * np.sum( np.abs( data[:] - sol[:] ) **2 ) ) **0.5  # L2 error.
+        NormMax[i]  = np.max( np.abs( data[:] - sol[:] ) )                               # L-Max error.
 
 
     # Iterate to calculates the L norms -- comparing with the last (Note: ds are decressing)
@@ -108,17 +98,17 @@ def convergence_da_plt(age_max, time_max, da, dt, order, m, b, constant, hill_fu
     plt.legend()
 
     # Convert ds array values to a string
-    ds_values_str = '_'.join(map(str, da))
+    # ds_values_str = '_'.join(map(str, da))
 
     # Save the plot to a file -- labels with da values and dt 
-    plt.savefig(folder + '/plots/dt_' + str(dt) + '/da_convergence_exact_for_da_' + str(ds_values_str) + '_dt_' + str(dt) + '.png', dpi=300)
+    # plt.savefig(folder + '/plots/dt_' + str(dt) + '/da_convergence_exact_for_da_' + str(ds_values_str) + '_dt_' + str(dt) + '.png', dpi=300)
     plt.show()
     plt.close()
 
     return Norm2, L2norm, NormMax, LMaxnorm
 
 
-def convergence_dt_plt(Smax, Tmax, ds, dt, order, m, b, constant, folder):
+def convergence_dt_plt(age_max, Tmax, da, dt, order, par, folder):
     """Calculates the convergence for varying ds and dt.
     
     Args:
@@ -135,8 +125,8 @@ def convergence_dt_plt(Smax, Tmax, ds, dt, order, m, b, constant, folder):
         NormMax (array):    A list of the infinity-norms.
         LMaxnorm(array):    A list of the order of the infinity-norms.
     """
-
-    Ntest = len(ds)                 # number of cases
+    print('Calculate convergence using the analytic solution (varied dt).')
+    Ntest = len(da)                 # number of cases
 
     # initialize the arrays for the norms and norm orders to zero
     Norm2 = np.zeros([Ntest])       # 2 norm
@@ -149,26 +139,27 @@ def convergence_dt_plt(Smax, Tmax, ds, dt, order, m, b, constant, folder):
     for i in range(0, Ntest):
 
         # initialize values
-        step = np.arange(0, Smax + ds[i], ds[i])    # array from o to Smax
-        Nstep = len(step)                           # number of elements in step
+        age_num_points = int(age_max / da[i]) + 1
+        age = np.linspace(0, age_max, age_num_points)
+        Nage = len(age)                                 # number of elements in age
 
-        mu = np.zeros(Nstep)
-        mu = mortality(Smax, step, m, b, constant, False, False)
-        # print(mu)
+        mu = np.zeros(Nage)
+        mu = mortality(age, par)
 
         Ntime = int(Tmax/dt[i])     # Time-step of comparison.
         Tend = Ntime * dt[i]        # Get the associated timepoint value.
 
         # data = np.zeros([int(Tmax/ds[i]), Nstep])       # initialize matrix for numerical solution
-        data = np.zeros([Ntime, Nstep])                   # initialize matrix for numerical solution
-        sol = np.zeros([Nstep])                           # initialize array for analytical solution
+        data = np.zeros([Nage])                   # initialize matrix for numerical solution
+        sol = np.zeros([Nage])                           # initialize array for analytical solution
 
 
         # Numerical solution -- download relevent data
-        data = np.loadtxt(f'{folder}/solutions/num_{i}.txt') 
+        # data = np.loadtxt(f'{folder}/solutions/num_{i}.txt') 
+        data = last_time_solution(folder, i)
 
         # Analyticial solution -- changes for what ds is
-        sol = np.exp(-(step - ( Tend + 5))**2) * np.exp(-mu * Tend)     # with advection -- constant
+        sol = np.exp(-(age - ( Tend + 5))**2) * np.exp(-mu * Tend)     # with advection -- constant
         # sol = np.exp(-(step - ( Tend + 5))**2) * np.exp( - m *  step  * Tend + m * Tend**2 * 0.5)     # with advection -- non-constant
         # sol = np.exp(-(step - 5)**2) * np.exp( - mu * Tend)             # without advection
 
@@ -177,12 +168,9 @@ def convergence_dt_plt(Smax, Tmax, ds, dt, order, m, b, constant, folder):
         # sol = np.exp(-(step - ( Tend + 5))**2) * np.exp(- (Tend + 200 * np.log(step**2 + 400) - 200 * np.log((step - Tend)**2 +400))) # hill function
         # sol = np.exp(-(step - ( Tend + 5))**2) * np.exp(- (20 * np.log(step**2 + 400) - 20 * np.log((step - Tend)**2 +400)))  # hill function
 
-
-    
-
         # Calculate the norm 
-        Norm2[i] = np.sqrt(np.mean((data[-1, :] - sol[:])**2))      # L2 norm
-        NormMax[i]  = np.max( np.abs( data[-1,:] - sol[:] ) )       # Lmax norm
+        Norm2[i]    = np.sqrt(np.mean((data[:] - sol[:])**2))       # L2 norm
+        NormMax[i]  = np.max( np.abs( data[:] - sol[:] ) )          # Lmax norm
 
 
     # Iterate to calculates the L norms -- comparing with the last (Note: ds and dt are decressing with same CFL value)
@@ -194,7 +182,7 @@ def convergence_dt_plt(Smax, Tmax, ds, dt, order, m, b, constant, folder):
     # Print error and order for each combination of ds and dt
     for i in range(0, Ntest):
 
-        print('For ds ='    + str( round( ds[i],10      ) ) + ' and dt ='    + str( round( dt[i],10      ) ) )
+        print('For ds ='    + str( round( da[i],10      ) ) + ' and dt ='    + str( round( dt[i],10      ) ) )
         print('Norm 2 error: '   + str( round( Norm2[i], 10  ) ) )
         print('Norm inf error: ' + str( round( NormMax[i], 10) ) )
 
@@ -226,7 +214,9 @@ def convergence_dt_plt(Smax, Tmax, ds, dt, order, m, b, constant, folder):
     return Norm2, L2norm, NormMax, LMaxnorm
 
 
-def conservation_plt(ds, c, Smax, Tmax, dt, order, folder, constant, hill_func):
+
+
+def conservation_plt(ds, c, Smax, Tmax, order, folder):
     """Performs trapezoidal rule
     
     Args:
@@ -244,6 +234,8 @@ def conservation_plt(ds, c, Smax, Tmax, dt, order, folder, constant, hill_func):
         L1norm  (array):    A list of 1-norm orders.
     """
 
+    print('Calculate convergence using the analytic solution.')
+
     Norm1 = np.zeros([5])
     L1norm = np.zeros([5])
 
@@ -253,14 +245,23 @@ def conservation_plt(ds, c, Smax, Tmax, dt, order, folder, constant, hill_func):
         totalPop_num = 0
         totalPop_sol = 0
 
-        age = np.arange(0, Smax + ds[i], ds[i])      # array from 0 to age_max
+        # age = np.arange(0, Smax + ds[i], ds[i])      # array from 0 to age_max
+        # initialize values
+        age_num_points = int(Smax / ds[i]) + 1
+        age = np.linspace(0, Smax, age_num_points)
+        Nage = len(age)                                 # number of elements in age
 
+        mu = np.zeros(Nage)
+        mu = mortality(age, c)
 
-        if constant == True:
-            sol = np.exp(-(age - ( Tmax + 5))**2) * np.exp( - c * Tmax)     # with advection -- CONSTANT
-        else:
-            if hill_func == True:
-                sol = np.exp(-(age - ( Tmax + 5))**2) * np.exp(- (30 * np.log(age**2 + 30**2) - 30 * np.log((age - Tmax)**2 +30**2))) # with advection -- hill function
+        # Analyticial solution -- changes for what ds is
+        sol = np.exp(-(age - ( Tmax + 5))**2) * np.exp(-mu * Tmax)     # with advection -- constant
+
+        # if constant == True:
+        #     sol = np.exp(-(age - ( Tmax + 5))**2) * np.exp( - c * Tmax)     # with advection -- CONSTANT
+        # else:
+        #     if hill_func == True:
+        #         sol = np.exp(-(age - ( Tmax + 5))**2) * np.exp(- (30 * np.log(age**2 + 30**2) - 30 * np.log((age - Tmax)**2 +30**2))) # with advection -- hill function
                 # sol = np.exp(-(age - (Tend + 5))**2) / ((age**2 + 30**2) / ((age - Tend)**2 + 30**2))**30
 
             # else:
@@ -269,16 +270,17 @@ def conservation_plt(ds, c, Smax, Tmax, dt, order, folder, constant, hill_func):
 
         # data = np.loadtxt('da_convergence/num_' + str(i) + '.txt')      # Load in relevant data.
                 # Load in relevant data for both mesh sizes
-        if isinstance(dt, np.ndarray):
-            data = np.loadtxt(f'{folder}/solutions/num_{i}.txt') 
-        else:
-            data = np.loadtxt(f'{folder}/solutions/dt_{dt}/num_{i}.txt') 
+        # if isinstance(dt, np.ndarray):
+        #     data = np.loadtxt(f'{folder}/solutions/num_{i}.txt') 
+        # else:
+        #     data = np.loadtxt(f'{folder}/solutions/dt_{dt}/num_{i}.txt') 
+        data = last_time_solution(folder, i)
 
         # Calculate the total population 
         totalPop_sol = trapezoidal_rule( sol,            ds[i])      # solution for different ds
         print('Exact total pop      = ' + str(totalPop_sol))
 
-        totalPop_num = trapezoidal_rule( data[-1,:],     ds[i])
+        totalPop_num = trapezoidal_rule( data[:],     ds[i])
         print('Numerical total pop  = ' + str(totalPop_num))
 
 
@@ -318,7 +320,7 @@ def conservation_plt(ds, c, Smax, Tmax, dt, order, folder, constant, hill_func):
     plt.legend()
 
     # Convert ds array values to a string
-    ds_values_str = '_'.join(map(str, np.round(ds, 3) ))
+    # ds_values_str = '_'.join(map(str, np.round(ds, 3) ))
 
     # # if isinstance(dt, np.ndarray):
     # if isinstance(dt, np.ndarray):
@@ -334,3 +336,24 @@ def conservation_plt(ds, c, Smax, Tmax, dt, order, folder, constant, hill_func):
     plt.close()
 
     return Norm1, L1norm
+
+
+def last_time_solution(folder, i):
+    # Specify the ZIP file and extraction directory
+    zip_filename = folder + f"_results_{i}.zip"
+    output_dir = "unzipped_output"  # Directory to extract files
+
+    with zipfile.ZipFile(zip_filename, 'r') as zf:
+        # List all files in the ZIP
+        file_list = zf.namelist()
+        
+        # Sort the files (important if time steps should be in order)
+        file_list = sorted(file_list, key=lambda x: int(re.search(r'\d+', x).group()))
+        
+        # Read the last file in the list
+        last_file = file_list[-1]
+        with zf.open(last_file) as f:
+            last_solution = np.load(f)  # Load the .npy file into a numpy array
+
+    print(f"Loaded the last file: {last_file}")
+    return np.array(last_solution)
