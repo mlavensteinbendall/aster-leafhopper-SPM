@@ -1,7 +1,7 @@
 import numpy as np # Numpy for numpy
 import matplotlib.pyplot as plt
 
-from function_mortality import mortality
+# from function_mortality import mortality
 
 def convergence_da_plt(age_max, time_max, da, dt, order, m, b, constant, hill_func, folder):
     """Calculates the convergence for varying ds and constant dt.

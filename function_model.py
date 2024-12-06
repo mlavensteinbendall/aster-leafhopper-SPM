@@ -1,9 +1,8 @@
 import numpy as np
-# from function_reproduction import reproduction
 import os
 import zipfile
 from function_trapezoidal_rule import trapezoidal_rule
-# from function_mortality import mortality
+
 
 def mortality(age, par):
     # return np.full(len(age), par)
