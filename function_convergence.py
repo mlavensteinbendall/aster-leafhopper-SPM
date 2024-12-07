@@ -4,7 +4,7 @@ import re
 import zipfile
 from function_trapezoidal_rule import trapezoidal_rule
 
-def convergence_da_plt(Tmax, da, dt, order, folder):
+def convergence_da_plt(da, dt, order, folder):
 
     print('Calculate convergence varying da and fixing dt (without using analytic solution)')
 
@@ -19,8 +19,8 @@ def convergence_da_plt(Tmax, da, dt, order, folder):
     for i in range(0, Ntest-1):
 
         # Load in last time step from data with differnt mesh sizes
-        data1 = last_time_solution(folder, i)       # delta t
-        data2 = last_time_solution(folder, i+1)     # delta t / 2
+        data1 = last_time_solution(folder, i, da, dt)       # delta t
+        data2 = last_time_solution(folder, i+1, da, dt)     # delta t / 2
 
         print(data1.shape)
         print(data2.shape)
@@ -68,7 +68,7 @@ def convergence_da_plt(Tmax, da, dt, order, folder):
     return Norm2, L2norm, NormMax, LMaxnorm
 
 
-def convergence_dt_plt(Tmax, ds, dt, order, folder):
+def convergence_dt_plt(da, dt, order, folder):
 
     print('Calculate convergence varying da and dt (without using analytic solution)')
 
@@ -83,18 +83,18 @@ def convergence_dt_plt(Tmax, ds, dt, order, folder):
     for i in range(0, Ntest-1):
 
         # # Load in relevant data for both mesh sizes
-        data1 = last_time_solution(folder, i)
-        data2 = last_time_solution(folder, i+1)
+        data1 = last_time_solution(folder, i, da, dt)
+        data2 = last_time_solution(folder, i+1, da, dt)
  
         Norm2[i]   = np.sqrt(np.mean((data1[:]  - data2[::2])**2))  # L2 norm
         NormMax[i] = np.max (np.abs(  data1[:]  - data2[::2]))      # L∞ norm
 
         # Calculate the order of convergence for norms
         if i > 0:
-            print(ds[i])
-            print(ds[i-1])
-            L2norm[i-1] = np.log(Norm2[i-1] / Norm2[i]) / np.log(ds[i-1] / ds[i])
-            LMaxnorm[i-1] = np.log(NormMax[i-1] / NormMax[i]) / np.log(ds[i-1] / ds[i])
+            print(da[i])
+            print(da[i-1])
+            L2norm[i-1] = np.log(Norm2[i-1] / Norm2[i]) / np.log(da[i-1] / da[i])
+            LMaxnorm[i-1] = np.log(NormMax[i-1] / NormMax[i]) / np.log(da[i-1] / da[i])
 
     # Display the norms and errors
     for i in range(0, Ntest-1):
@@ -145,22 +145,14 @@ def conservation_plt(da, dt, order, folder):
     for i in range(0, Ntest-1):
 
         # Load in relevant data for both mesh sizes
-        # if isinstance(dt, np.ndarray):
-        #     data1 = np.loadtxt(f'{folder}/solutions/num_{i}.txt') 
-        #     data2 = np.loadtxt(f'{folder}/solutions/num_{i+1}.txt')
-        # else:
-        #     data1 = np.loadtxt(f'{folder}/solutions/dt_{dt}/num_{i}.txt') 
-        #     data2 = np.loadtxt(f'{folder}/solutions/dt_{dt}/num_{i+1}.txt')
-
-        data1 = last_time_solution(folder, i)
-        data2 = last_time_solution(folder, i+1)
+        data1 = last_time_solution(folder, i, da, dt)
+        data2 = last_time_solution(folder, i+1, da, dt)
  
 
         # Time of interest to compare
-        # totalPop_1[i] = trapezoidal_rule( data1[-1,:], da[i])           # using data at Tmax
-        # totalPop_2[i] = trapezoidal_rule( data2[-1,:], da[i+1])         # using data at Tmax
         totalPop_1[i] = trapezoidal_rule( data1[:], da[i])           # using data at Tmax
         totalPop_2[i] = trapezoidal_rule( data2[:], da[i+1])         # using data at Tmax
+        
         print('Numerical total pop using da = ' + str(da[i]) +'  = '      + str(totalPop_1[i]))
         print('Numerical total pop using da = '  + str(da[i+1]) +'  = '    + str(totalPop_2[i]))
 
@@ -210,9 +202,12 @@ def conservation_plt(da, dt, order, folder):
     return Norm1, L1norm
 
 
-def last_time_solution(folder, i):
+def last_time_solution(folder, i, da, dt):
     # Specify the ZIP file and extraction directory
-    zip_filename = folder + f"_results_{i}.zip"
+    if isinstance(dt, np.ndarray):
+        zip_filename = folder + f"_results_{i}_da_{da[i]}_dt_{dt[i]}.zip"
+    else:
+        zip_filename = folder + f"_results_{i}_da_{da[i]}_dt_{dt}.zip"
     output_dir = "unzipped_output"  # Directory to extract files
 
     with zipfile.ZipFile(zip_filename, 'r') as zf:

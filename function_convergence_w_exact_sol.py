@@ -155,7 +155,6 @@ def convergence_dt_plt(age_max, Tmax, da, dt, order, par, folder):
 
 
         # Numerical solution -- download relevent data
-        # data = np.loadtxt(f'{folder}/solutions/num_{i}.txt') 
         data = last_time_solution(folder, i)
 
         # Analyticial solution -- changes for what ds is

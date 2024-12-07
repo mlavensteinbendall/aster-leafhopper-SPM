@@ -19,6 +19,12 @@ def reproduction(N, age, da, par):
         births (float): number of births
     """
 
+    # reproduction_rate = k_dep(age, par)
+
+    return trapezoidal_rule(k_dep(age, par) * N, da)
+
+def k_dep(age, par):
+
     reproduction_rate = np.full(len(age), 0.0)
 
     for i in range(0, len(age)):
@@ -30,10 +36,10 @@ def reproduction(N, age, da, par):
 
         reproduction_rate[i] = par / (1 + np.exp(-15 * (age[i] - 10.5)))       # Logistic
 
-    return trapezoidal_rule(reproduction_rate * N, da)
+    return reproduction_rate
 
 
-def solveSPM(par, age, time, da, dt, k, type_k, filename, ntag, save_rate):
+def solveSPM(par, age, time, da, dt, k, filename, ntag, save_rate):
     """Calculates the numerical solution using strang splitting, lax-wendroff, and runge-kutta method. 
     
     Args:
@@ -126,7 +132,7 @@ def solveSPM(par, age, time, da, dt, k, type_k, filename, ntag, save_rate):
     np.save(os.path.join(temp_dir, f"step_{t}.npy"), N)
 
     # Combine all .npy files into a compressed .zip archive
-    zip_filename = f"{filename}_results_{ntag}.zip"
+    zip_filename = f"{filename}_results_{ntag}_da_{da}_dt_{dt}.zip"
     with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zf:
         for file in os.listdir(temp_dir):
             zf.write(os.path.join(temp_dir, file), arcname=file)

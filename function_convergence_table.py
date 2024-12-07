@@ -81,3 +81,13 @@ def tabulate_conv(dt, ds, Norm2, L2norm, NormMax, LMaxnorm, Norm1, L1norm, folde
     #     file2write=open(folder + '/solutions/dt_' + str(dt) + '/order_table_' + '_da_' + ds_values_str + '_dt_' + str(dt) + '.txt' ,'w')
     # file2write.write(latex_table)
     # file2write.close()
+
+
+def excel_table(dt, da, Norm2, L2norm, NormMax, LMaxnorm, Norm1, L1norm):
+    # print excel compatible table
+    if isinstance(dt, np.ndarray):
+        for i in range(len(da)):
+            print(f"{dt[i]}, {da[i]}, {Norm2[i]}, {L2norm[i]}, {NormMax[i]}, {LMaxnorm[i]}, {Norm1[i]}, {L1norm[i]}")
+    else:
+        for i in range(len(da)):
+            print(f"{dt}, {da[i]}, {Norm2[i]}, {L2norm[i]}, {NormMax[i]}, {LMaxnorm[i]}, {Norm1[i]}, {L1norm[i]}")

@@ -1,52 +1,46 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from function_trapezoidal_rule import trapezoidal_rule
-# from function_reproduction import k_ind
+from function_model import mortality, k_dep
+import re
+import zipfile
 
-
-def plt_mortality_func(age, mu, dt, folder):
+def plt_mortality_func(age, par, folder):
 
     print('Plot mortality function')
+
+    mu = mortality(age, par)
 
     plt.plot(age, mu)
     plt.xlabel('Age')
     plt.ylabel('Mortality Rate')
     plt.title('Age-Specific Mortality Rate')
 
-    if isinstance(dt, np.ndarray): 
-        plt.savefig(folder + '/plots/mortality_plot.png', dpi=300)
-    else:
-        plt.savefig(folder + '/plots/dt_' + str(dt) + '/mortality_plot.png', dpi=300)
+    # if isinstance(dt, np.ndarray): 
+    #     plt.savefig(folder + '/plots/mortality_plot.png', dpi=300)
+    # else:
+    #     plt.savefig(folder + '/plots/dt_' + str(dt) + '/mortality_plot.png', dpi=300)
 
+    plt.show()
     plt.close()
 
-def plt_reproduction_func(age, k, type_k, dt, folder):
+def plt_reproduction_rate_func(age, par, folder):
 
     print('Plot mortality function')
 
-    reproduction_rate = np.full(len(age), 0.0)
-
-    for i in range(0, len(age)):
-        # if age[i] > 15:                           #step function                           
-            # reproduction_rate[i] = par            # constant 
-            # reproduction_rate[i] = par * age[i]   # linear 
-
-        # reproduction_rate[i] =  par * np.exp(-(1/5000) * (age[i] - 18)**6)      # Gaussian
-
-        reproduction_rate[i] = k / (1 + np.exp(-15 * (age[i] - 10.5)))       # Logistic
-
-
+    reproduction_rate = k_dep(age, par)
 
     plt.plot(age, reproduction_rate)
     plt.xlabel('Age')
     plt.ylabel('Reproduction Rate')
     plt.title('Age-Specific Reproduction Rate')
 
-    if isinstance(dt, np.ndarray): 
-        plt.savefig(folder + '/plots/reproduction_plot.png', dpi=300)
-    else:
-        plt.savefig(folder + '/plots/dt_' + str(dt) + '/reproduction_plot.png', dpi=300)
+    # if isinstance(dt, np.ndarray): 
+    #     plt.savefig(folder + '/plots/reproduction_plot.png', dpi=300)
+    # else:
+    #     plt.savefig(folder + '/plots/dt_' + str(dt) + '/reproduction_plot.png', dpi=300)
 
+    plt.show()
     plt.close()
     
 
@@ -111,6 +105,28 @@ def plt_boundary_condition(data, time, da, dt, index, folder):
     plt.show()
     plt.close()
 
+def first_time_solution(folder, i, da, dt):
+    # Specify the ZIP file and extraction directory
+    if isinstance(dt, np.ndarray):
+        zip_filename = folder + f"_results_{i}_da_{da[i]}_dt_{dt[i]}.zip"
+    else:
+        zip_filename = folder + f"_results_{i}_da_{da[i]}_dt_{dt}.zip"
+    # output_dir = "unzipped_output"  # Directory to extract files
+
+    with zipfile.ZipFile(zip_filename, 'r') as zf:
+        # List all files in the ZIP
+        file_list = zf.namelist()
+        
+        # Sort the files (important if time steps should be in order)
+        file_list = sorted(file_list, key=lambda x: int(re.search(r'\d+', x).group()))
+        
+        # Read the last file in the list
+        first_file = file_list[0]
+        with zf.open(first_file) as f:
+            first_solution = np.load(f)  # Load the .npy file into a numpy array
+
+    print(f"Loaded the first file: {first_solution}")
+    return np.array(first_solution)
 
 def plt_numerical_sol(analytical_sol, sol, data, age, time, da, dt, Ntime, index, folder):
 
