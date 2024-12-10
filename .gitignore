@@ -169,3 +169,6 @@ videos/*
 .DS_Store
 convergence/
 convergence/*
+population_dynamics.gif
+population_dynamics_1.gif
+population_dynamics_2.gif

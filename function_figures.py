@@ -44,25 +44,28 @@ def plt_reproduction_rate_func(age, par, folder):
     plt.close()
     
 
-def plt_total_pop(data, time, da, dt, index, folder):
+def plt_total_pop(data, time, da, dt, index, folder, save_rate):
 
     print('Plot total population')
 
     times = []
 
     for t,T in enumerate(time):
-        if t % 10 == 0:
+        if t == 0 or t == len(time) - 1 or t % save_rate == 0:
             times.append(T)
 
     times = np.array(times)
     totalPop = np.zeros(len(times))
 
-    for i in range(0,len(times)-1):
+    for i in range(0,len(times)):
         print(i)
         totalPop[i] = trapezoidal_rule(data[i,:], da) 
         # totalPop[i] = trapezoidal_rule(data[i], da)
 
-    plt.plot(totalPop)
+    # print(totalPop)
+    # print(data[-1,:])
+
+    plt.plot(times, totalPop)
     plt.xlabel('Time')
     plt.ylabel('Population')
     plt.title('Total Population over Time')
@@ -77,18 +80,17 @@ def plt_total_pop(data, time, da, dt, index, folder):
 
 
 
-def plt_boundary_condition(data, time, da, dt, index, folder):
+def plt_boundary_condition(data, time, da, dt, index, folder, save_rate):
 
     print('Plot boundary condition')
 
     # data = np.array(data)
-    bc = data[:][0]
+    # bc = data[:,0]
 
-    # times = np.zeros(len(data))
     times = []
 
     for t,T in enumerate(time):
-        if t % 10 == 0:
+        if t == 0 or t == len(time) - 1 or t % save_rate == 0:
             times.append(T)
 
     plt.plot(times, data[:,0])

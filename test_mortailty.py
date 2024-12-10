@@ -20,8 +20,10 @@ Tmax = 20
 order = 2       # order of method
 Ntest = 5       # number of cases
 
+save_rate = 15
+
 k = 1           # reproduction
-par = 0      # mortality
+par = 0.09      # mortality
 
 # need to chose da and dt so that the last value in the array are Amax and Tmax
 da = np.zeros([Ntest]) # order smallest to largest
@@ -79,12 +81,12 @@ for i in range(Ntest):
         print('CFL: ' + str(round(dt[i]/da[i], 5)))   
 
         # calculate solution
-        solveSPM(par, age, time, da[i], dt[i], k, folder, i, 10)
+        solveSPM(par, age, time, da[i], dt[i], k, folder, i,save_rate)
 
         zip_filename = folder + f"_results_{i}_da_{da[i]}_dt_{dt[i]}.zip"
 
-        plt_mortality_func(age, par, folder)
-        plt_reproduction_rate_func(age, k, folder)
+        # plt_mortality_func(age, par, folder)
+        # plt_reproduction_rate_func(age, k, folder)
 
             
     # ELSE da is varied and dt is constant, do this ------------------------------------------------
@@ -98,7 +100,7 @@ for i in range(Ntest):
         print('CFL: ' + str(round(dt/da[i], 5)))
 
         # calculate solution
-        solveSPM(par, age, time, da[i], dt, k, folder, i, 20)
+        solveSPM(par, age, time, da[i], dt, k, folder, i, save_rate)
         zip_filename = folder + f"_results_{i}_da_{da[i]}_dt_{dt}.zip"
 
 
@@ -126,6 +128,9 @@ for i in range(Ntest):
     # Now `solutions` is a list of numpy arrays, one for each time step
     print(f"Loaded {len(solutions)} time steps.")
 
+    # plt_total_pop(data, time, da[i], dt[i], i, folder, save_rate)
+    # plt_boundary_condition(data, time, da, dt, i, folder, save_rate)
+
     print(data.shape)
 
     plt.plot(age, data[0, :],  label=f'txt Numerical at time  {round(time[0] , 1)  }', linestyle='-') 
@@ -136,7 +141,7 @@ for i in range(Ntest):
     plt.ylabel('Population')
     plt.title('Age Distribution of Population (' + r'$\Delta a$' + ' = ' + str(da[i]) + ', ' + r'$\Delta t$' + ' = ' + str(dt) + ')')
     plt.legend()
-    plt.show()        # show plot
+    # plt.show()        # show plot
     plt.close()
 
     print('Loop ' + str(i) + ' Complete.')                      # progress update, loop end

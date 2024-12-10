@@ -5,9 +5,10 @@ from function_trapezoidal_rule import trapezoidal_rule
 
 
 def mortality(age, par):
-    # return np.full(len(age), par)
-    return par * age
+    return np.full(len(age), par)
+    # return par * age
     # return (age / 15) * (30**2 / (30**2 + age**2))
+    # return np.exp(par*(age-30)) 
 
 def reproduction(N, age, da, par):
     """Calculate the reproduction 
