@@ -4,7 +4,7 @@ import re
 import zipfile
 from function_trapezoidal_rule import trapezoidal_rule
 
-def convergence_da_plt(da, dt, order, folder):
+def convergence_da_plt(da, dt, folder):
 
     print('Calculate convergence varying da and fixing dt (without using analytic solution)')
 
@@ -50,7 +50,7 @@ def convergence_da_plt(da, dt, order, folder):
     # Plot the log-log for the errors
     plt.loglog(da[:-1], Norm2,          label='Norm2')
     plt.loglog(da[:-1], NormMax,        label='NormMax')
-    plt.loglog(da[:-1], da[:-1]**order, label=f'Order-{order}')
+    plt.loglog(da[:-1], da[:-1]**2, label=f'Order-{2}')
 
     plt.xlabel(r'$\Delta a$')
     plt.ylabel('Norm')
@@ -58,17 +58,17 @@ def convergence_da_plt(da, dt, order, folder):
     plt.legend()
 
     # Convert ds array values to a string
-    # ds_values_str = '_'.join(map(str, np.round(da, 5) ))
+    da_values_str = '_'.join(map(str, da))
 
-    # Save the plot to a file -- labels with da values and dt  
-    # plt.savefig(folder + '/plots/dt_' + str(dt) + '/da_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt) + '.png', dpi=300)
+    # Save the plot to a file -- labels with da values and dt 
+    plt.savefig(folder + f'_da_con_da_{da_values_str}_dt_{dt}.png', dpi=300)
     plt.show()
     plt.close()
 
     return Norm2, L2norm, NormMax, LMaxnorm
 
 
-def convergence_dt_plt(da, dt, order, folder):
+def convergence_dt_plt(da, dt, folder):
 
     print('Calculate convergence varying da and dt (without using analytic solution)')
 
@@ -110,7 +110,7 @@ def convergence_dt_plt(da, dt, order, folder):
     # Plot the log-log for the errors
     plt.loglog(dt[:-1], Norm2, label='Norm2')
     plt.loglog(dt[:-1], NormMax, label='NormMax')
-    plt.loglog(dt[:-1], dt[:-1]**order, label=f'Order-{order}')
+    plt.loglog(dt[:-1], dt[:-1]**2, label=f'Order-{2}')
 
     plt.xlabel(r'$\Delta t$')
     plt.ylabel('Norm')
@@ -118,18 +118,18 @@ def convergence_dt_plt(da, dt, order, folder):
     plt.legend()
 
     # Convert ds array values to a string
-    # ds_values_str = '_'.join(map(str, np.round(ds, 3) ))
-    # dt_values_str = '_'.join(map(str, np.round(dt, 3)))
+    da_values_str = '_'.join(map(str, np.round(da, 3) ))
+    dt_values_str = '_'.join(map(str, np.round(dt, 3)))
 
 
     # Save the plot to a file -- labels with da values and dt 
-    # plt.savefig(folder + '/plots/dt_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt_values_str) + '.png', dpi=300)
+    plt.savefig(folder + f'_dt_con_da_{da_values_str}_dt_{dt_values_str}.png', dpi=300)
     plt.show()
     plt.close()
 
     return Norm2, L2norm, NormMax, LMaxnorm
 
-def conservation_plt(da, dt, order, folder):
+def conservation_plt(da, dt, folder):
 
     print('Calculate conservation (without using an analytic solution)')
 
@@ -176,7 +176,7 @@ def conservation_plt(da, dt, order, folder):
 
     # Plot the log-log for the errors
     plt.loglog(da[:-1], Norm1,          label='Norm1')
-    plt.loglog(da[:-1], da[:-1]**order, label=f'Order-{order}')
+    plt.loglog(da[:-1], da[:-1]**2, label=f'Order-{2}')
 
     plt.xlabel(r'$\Delta a$')
     plt.ylabel('Norm')
@@ -184,18 +184,14 @@ def conservation_plt(da, dt, order, folder):
     plt.legend()
 
     # Convert ds array values to a string
-    ds_values_str = '_'.join(map(str, np.round(da, 3) ))
+    da_values_str = '_'.join(map(str, np.round(da, 3) ))
 
-    # # if isinstance(dt, np.ndarray):
-    # if isinstance(dt, np.ndarray):
-    #     # plt.savefig('da_plot/'+ folder +'/varied_dt/lw-ex_plot_totPop_mu__ds_' + ds_values_str + '.png', dpi=300)
-    #     dt_values_str = '_'.join(map(str, np.round(dt, 3)))
-    #     plt.savefig(folder + '/plots/tot_pop_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt_values_str) + '.png', dpi=300)
+    if isinstance(dt, np.ndarray):
+        dt_values_str = '_'.join(map(str, np.round(dt, 3)))
+        plt.savefig(folder + f'_dt_total_pop_con_da_{da_values_str}_dt_{dt_values_str}.png', dpi=300)
 
-    # else:
-    #     # plt.savefig('da_plot/'+ folder +'/fixed_dt/lw-ex_plot_totPop_mu__ds_' + ds_values_str + '.png', dpi=300)  
-    #     plt.savefig(folder + '/plots/dt_' + str(dt) + '/tot_pop_convergence_for_da_' + str(ds_values_str) + '_dt_' + str(dt) + '.png', dpi=300)
- 
+    else:
+        plt.savefig(folder + f'_da_total_pop_con_da_{da_values_str}_dt_{dt}.png', dpi=300)
     plt.show()
     plt.close()
 

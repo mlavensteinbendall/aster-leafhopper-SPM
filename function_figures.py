@@ -16,17 +16,13 @@ def plt_mortality_func(age, par, folder):
     plt.ylabel('Mortality Rate')
     plt.title('Age-Specific Mortality Rate')
 
-    # if isinstance(dt, np.ndarray): 
-    #     plt.savefig(folder + '/plots/mortality_plot.png', dpi=300)
-    # else:
-    #     plt.savefig(folder + '/plots/dt_' + str(dt) + '/mortality_plot.png', dpi=300)
-
-    plt.show()
+    plt.savefig(folder + '_mortality_plot.png', dpi=300)
+    # plt.show()
     plt.close()
 
 def plt_reproduction_rate_func(age, par, folder):
 
-    print('Plot mortality function')
+    print('Plot reproduction function')
 
     reproduction_rate = k_dep(age, par)
 
@@ -40,11 +36,12 @@ def plt_reproduction_rate_func(age, par, folder):
     # else:
     #     plt.savefig(folder + '/plots/dt_' + str(dt) + '/reproduction_plot.png', dpi=300)
 
-    plt.show()
+    plt.savefig(folder + '_reproduction_plot.png', dpi=300)
+    # plt.show()
     plt.close()
     
 
-def plt_total_pop(data, time, da, dt, index, folder, save_rate):
+def plt_total_pop(data, time, da, dt, folder, save_rate):
 
     print('Plot total population')
 
@@ -58,7 +55,7 @@ def plt_total_pop(data, time, da, dt, index, folder, save_rate):
     totalPop = np.zeros(len(times))
 
     for i in range(0,len(times)):
-        print(i)
+        # print(i)
         totalPop[i] = trapezoidal_rule(data[i,:], da) 
         # totalPop[i] = trapezoidal_rule(data[i], da)
 
@@ -71,21 +68,22 @@ def plt_total_pop(data, time, da, dt, index, folder, save_rate):
     plt.title('Total Population over Time')
 
     # if isinstance(dt, np.ndarray):
+    #     plt.savefig(folder + f'_total_population_plot_da_{da}_dt_{dt}.png', dpi=300)
     #     plt.savefig(folder + '/plots/tot_pop_over_time_for_da_' + str(da) + '_dt_' + str(dt[index]) + '.png', dpi=300)
 
     # else:
     #     plt.savefig(folder + '/plots/dt_' + str(dt) + '/tot_pop_over_time_for_da_' + str(da) + '_dt_' + str(dt) + '.png', dpi=300)
-    plt.show()
+
+    # plt.savefig(folder + '_total_population_plot.png', dpi=300)
+    plt.savefig(folder + f'_total_population_plot_da_{da}_dt_{dt}.png', dpi=300)
+    # plt.show()
     plt.close()
 
 
 
-def plt_boundary_condition(data, time, da, dt, index, folder, save_rate):
+def plt_boundary_condition(data, time, da, dt, folder, save_rate):
 
     print('Plot boundary condition')
-
-    # data = np.array(data)
-    # bc = data[:,0]
 
     times = []
 
@@ -94,7 +92,6 @@ def plt_boundary_condition(data, time, da, dt, index, folder, save_rate):
             times.append(T)
 
     plt.plot(times, data[:,0])
-    # plt.plot(bc)
     plt.xlabel('Time')
     plt.ylabel('Number of Newborns')
     plt.title('Boundary Condition')
@@ -104,7 +101,8 @@ def plt_boundary_condition(data, time, da, dt, index, folder, save_rate):
 
     # else:
     #     plt.savefig(folder + '/plots/dt_' + str(dt) + '/boundary_condition_for_da_' + str(da) + '_dt_' + str(dt) + '.png', dpi=300)
-    plt.show()
+    plt.savefig(folder + f'_bc_plot_da_{da}_dt_{dt}.png', dpi=300)
+    # plt.show()
     plt.close()
 
 def first_time_solution(folder, i, da, dt):
@@ -168,3 +166,56 @@ def plt_numerical_sol(analytical_sol, sol, data, age, time, da, dt, Ntime, index
 
 
 
+def plt_numerical_solution(age, time, da, dt, par, ntag, folder, save_rate):
+
+    times = []
+
+    for t,T in enumerate(time):
+        if t == 0 or t == len(time) - 1 or t % save_rate == 0:
+            times.append(T)
+
+    Ntime = len(times)
+    plot_indices = [0, Ntime // 2, Ntime - 1]
+
+    # Specify the ZIP file and extraction directory
+    zip_filename = folder + f"_results_{ntag}_da_{da}_dt_{dt}.zip"
+    # output_dir = "unzipped_output"  # Directory to extract files
+
+    # Open the ZIP file
+    with zipfile.ZipFile(zip_filename, 'r') as zf:
+
+        # List all files in the ZIP
+        file_list = zf.namelist()
+        
+        # Sort the files (important if time steps should be in order)
+        file_list = sorted(file_list, key=lambda x: int(re.search(r'\d+', x).group()))
+
+        print(file_list)
+        
+        # Read each file into memory
+        solutions = []
+        for file in file_list:
+            with zf.open(file) as f:
+                solutions.append(np.load(f))  # Load the .npy file into a numpy array
+
+    data = np.stack(solutions, axis = 0)
+
+    mu = mortality(age, par)
+
+    for t_index in plot_indices:
+        # sol = np.exp(-(age - ( times[t_index] + 5))**2) * np.exp(-mu * times[t_index])  # constant mortality
+        # sol = np.exp(-(age - ( times[t_index] + 5))**2) * np.exp( (-par * age * times[t_index]) + (par * times[t_index]**2 / 2) )  # linear mortality
+        sol = np.exp(-(age - ( times[t_index] + 5))**2) * np.exp(- (30 * np.log(age**2 + 30**2) - 30 * np.log((age - times[t_index])**2 +30**2))) # hill function
+        # plt.plot(age, sol, label=f'Analytical at time {round(times[t_index], 1)  }', linestyle='-')     # analytical 
+
+        plt.plot(age, data[t_index, :], label=f'Numerical at time  {round(times[t_index], 1)  }', linestyle=':')    # numerical 
+
+
+    plt.axhline(y=1, color='r', linestyle='--', label='y=1')
+    plt.xlabel('Age')
+    plt.ylabel('Population')
+    plt.title('Age Distribution of Population (' + r'$\Delta a$' + ' = ' + str(da) + ', ' + r'$\Delta t$' + ' = ' + str(dt) + ')')
+    plt.legend()
+    plt.savefig(folder + f'_nm_plot_da_{da}_dt_{dt}.png', dpi=300)
+    # plt.show()        # show plot
+    plt.close()

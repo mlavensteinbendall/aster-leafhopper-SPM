@@ -5,10 +5,10 @@ from function_trapezoidal_rule import trapezoidal_rule
 
 
 def mortality(age, par):
-    return np.full(len(age), par)
-    # return par * age
-    # return (age / 15) * (30**2 / (30**2 + age**2))
-    # return np.exp(par*(age-30)) 
+    return np.full(len(age), par)                 # constant
+    # return par * age                              # linear
+    # return 1 / (1 + np.exp(-par* (age - 20)) )    # logistic
+    # return (age / 15) * (30**2 / (30**2 + age**2)) # hill
 
 def reproduction(N, age, da, par):
     """Calculate the reproduction 
@@ -30,12 +30,14 @@ def k_dep(age, par):
 
     for i in range(0, len(age)):
         # if age[i] > 15:                           #step function                           
-            # reproduction_rate[i] = par            # constant 
+        #     reproduction_rate[i] = par            # constant 
             # reproduction_rate[i] = par * age[i]   # linear 
 
-        # reproduction_rate[i] =  par * np.exp(-(1/5000) * (age[i] - 18)**6)      # Gaussian
+        reproduction_rate[i] =  par * np.exp(-(1/100000) * (age[i] - 20)**6)      # Gaussian
 
-        reproduction_rate[i] = par / (1 + np.exp(-15 * (age[i] - 10.5)))       # Logistic
+        # reproduction_rate[i] = par / (1 + np.exp(-15 * (age[i] - 10.5)))       # Logistic
+
+        # reproduction_rate[i] = par            # constant
 
     return reproduction_rate
 
@@ -59,6 +61,8 @@ def solveSPM(par, age, time, da, dt, k, filename, ntag, save_rate):
     Returns:
         None
     """
+
+    print('Running simulation')
 
     # Initial condition -- population at t=0
     N = np.zeros([len(age)])
