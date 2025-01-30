@@ -75,9 +75,16 @@ dt = 0.001
 # folder = 'convergence/reproduction/logistic/fixed_dt/logistic'
 # k = 1 
 
-# gaussian reproduction
-folder = 'convergence/reproduction/gaussian/fixed_dt/gaussian'
-k = 1
+# # gaussian reproduction
+# folder = 'convergence/reproduction/gaussian/fixed_dt/gaussian'
+# k = 1
+
+## TEST Both ------------------------------------------------------------
+
+# constant 
+folder = 'convergence/both/constant/fixed_dt/both_constant'
+k = 0.1        # reproduction parameter
+par = 0.05      # mortality parameter
 
 # initalize time array
 time_num_points = int(Tmax / dt) + 1

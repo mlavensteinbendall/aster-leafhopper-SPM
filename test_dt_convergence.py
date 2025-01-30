@@ -16,14 +16,14 @@ start = timeit.default_timer()
 
 ## INITIAL CONDITIONS
 Amax = 30      # max age
-Tmax = 20      # max time
+Tmax = 50      # max time
 order = 2       # order of method
 Ntest = 5       # number of cases
 
 save_rate = 15  # save the first, last, and mod this number
 
 k = 0           # reproduction parameter
-par = 0      # mortality parameter
+par = 0         # mortality parameter
 
 # need to chose da and dt so that the last value in the array are Amax and Tmax
 da = np.zeros([Ntest]) # order smallest to largest
@@ -77,8 +77,21 @@ dt = 0.5 * da
 # k = 1 
 
 # gaussian reproduction
-folder = 'convergence/reproduction/gaussian/varied_dt/gaussian'
-k = 1
+# folder = 'convergence/reproduction/gaussian/varied_dt/gaussian'
+# k = 1
+
+## TEST Both ------------------------------------------------------------
+
+# constant 
+# folder = 'convergence/both/constant/varied_dt/both_constant'
+# k = 0.1        # reproduction parameter
+# par = 0.05      # mortality parameter
+
+#logistic
+folder = 'convergence/both/logistic/varied_dt/both_logisti'
+k = 1        # reproduction parameter
+par = 0.4      # mortality parameter
+
 
 
 # Using the given da and dt values, this loop calculates the numerical solution, solve the analytical 
