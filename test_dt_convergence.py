@@ -16,7 +16,7 @@ start = timeit.default_timer()
 
 ## INITIAL CONDITIONS
 Amax = 30      # max age
-Tmax = 50      # max time
+Tmax = 20      # max time
 order = 2       # order of method
 Ntest = 5       # number of cases
 
@@ -88,9 +88,17 @@ dt = 0.5 * da
 # par = 0.05      # mortality parameter
 
 #logistic
-folder = 'convergence/both/logistic/varied_dt/both_logisti'
+# folder = 'convergence/both/logistic/varied_dt/logistic_reproduction_'
+# folder = 'convergence/both/logistic/varied_dt/constant_zero_'
+# k = 1        # reproduction parameter
+# par = 0      # mortality parameter
+
+
+# Boundary Condition tests
+test = 'logistic'
+folder = 'convergence/boundarytest/' + test +'/varied_dt/' + test
 k = 1        # reproduction parameter
-par = 0.4      # mortality parameter
+par = 0.1    # mortality parameter
 
 
 
@@ -113,8 +121,11 @@ for i in range(Ntest):
     time = np.linspace(0, Tmax, time_num_points)
     print("Time:", time[-1])                        # check that last element is Tmax
 
-    # print CFL
-    print('CFL: ' + str(round(dt[i]/da[i], 5)))
+    # check CFL condition
+    lambda_cfl = dt[i] / da[i]
+    if lambda_cfl > 1:
+        raise ValueError("CFL condition violated! Reduce dt or increase da.")
+    else: print('CFL: ' + str(round(lambda_cfl, 5)))
 
     # calculate solution
     solveSPM(par, age, time, da[i], dt[i], k, folder, i, save_rate)
@@ -133,7 +144,7 @@ for i in range(Ntest):
         # Sort the files (important if time steps should be in order)
         file_list = sorted(file_list, key=lambda x: int(re.search(r'\d+', x).group()))
 
-        print(file_list)
+        # print(file_list)
         
         # Read each file into memory
         solutions = []

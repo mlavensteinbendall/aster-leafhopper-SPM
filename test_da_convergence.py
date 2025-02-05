@@ -82,9 +82,16 @@ dt = 0.001
 ## TEST Both ------------------------------------------------------------
 
 # constant 
-folder = 'convergence/both/constant/fixed_dt/both_constant'
-k = 0.1        # reproduction parameter
-par = 0.05      # mortality parameter
+# folder = 'convergence/both/constant/fixed_dt/both_constant'
+# k = 0.1        # reproduction parameter
+# par = 0.05      # mortality parameter
+
+
+# Boundary Condition tests
+test = 'logistic'
+folder = 'convergence/boundarytest/' + test +'/fixed_dt/' + test
+k = 1        # reproduction parameter
+par = 0      # mortality parameter
 
 # initalize time array
 time_num_points = int(Tmax / dt) + 1

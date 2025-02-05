@@ -85,9 +85,25 @@ def convergence_dt_plt(da, dt, folder):
         # # Load in relevant data for both mesh sizes
         data1 = last_time_solution(folder, i, da, dt)
         data2 = last_time_solution(folder, i+1, da, dt)
+
  
         Norm2[i]   = np.sqrt(np.mean((data1[:]  - data2[::2])**2))  # L2 norm
         NormMax[i] = np.max (np.abs(  data1[:]  - data2[::2]))      # L∞ norm
+
+
+        age_num_points = int(30 / da[i]) + 1
+        age = np.linspace(0, 30, age_num_points)
+        # age2_num_points = int(30 / da[i+1]) + 1
+        # age2 = np.linspace(0, 30, age2_num_points)
+
+        # print(f"age1 = {age[:]}")
+        # print(f"age2 = {age2[::2]}")
+
+        plt.plot(age, np.abs(  data1[:]  - data2[::2]))
+        plt.ylabel("Difference")
+        plt.xlabel("Age")
+        plt.title("Last time step difference")
+        plt.show()
 
         # Calculate the order of convergence for norms
         if i > 0:
@@ -207,8 +223,10 @@ def last_time_solution(folder, i, da, dt):
     output_dir = "unzipped_output"  # Directory to extract files
 
     with zipfile.ZipFile(zip_filename, 'r') as zf:
+
         # List all files in the ZIP
         file_list = zf.namelist()
+        # print(file_list)
         
         # Sort the files (important if time steps should be in order)
         file_list = sorted(file_list, key=lambda x: int(re.search(r'\d+', x).group()))
@@ -218,5 +236,8 @@ def last_time_solution(folder, i, da, dt):
         with zf.open(last_file) as f:
             last_solution = np.load(f)  # Load the .npy file into a numpy array
 
+
+    # print(f"Last time: {count*dt[i]}")
     print(f"Loaded the last file: {last_file}")
     return np.array(last_solution)
+

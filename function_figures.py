@@ -190,7 +190,7 @@ def plt_numerical_solution(age, time, da, dt, par, ntag, folder, save_rate):
         # Sort the files (important if time steps should be in order)
         file_list = sorted(file_list, key=lambda x: int(re.search(r'\d+', x).group()))
 
-        print(file_list)
+        # print(file_list)
         
         # Read each file into memory
         solutions = []
