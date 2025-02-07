@@ -103,7 +103,10 @@ def convergence_dt_plt(da, dt, folder):
         plt.ylabel("Difference")
         plt.xlabel("Age")
         plt.title("Last time step difference")
-        plt.show()
+        plt.savefig(folder + f'_dt_diff_{i}.png', dpi=300)
+        # plt.show()
+        plt.close()
+
 
         # Calculate the order of convergence for norms
         if i > 0:

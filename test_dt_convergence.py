@@ -16,7 +16,7 @@ start = timeit.default_timer()
 
 ## INITIAL CONDITIONS
 Amax = 30      # max age
-Tmax = 20      # max time
+Tmax = 15      # max time
 order = 2       # order of method
 Ntest = 5       # number of cases
 
@@ -95,10 +95,10 @@ dt = 0.5 * da
 
 
 # Boundary Condition tests
-test = 'logistic'
+test = 'both'
 folder = 'convergence/boundarytest/' + test +'/varied_dt/' + test
 k = 1        # reproduction parameter
-par = 0.1    # mortality parameter
+par = 0.2   # mortality parameter
 
 
 
