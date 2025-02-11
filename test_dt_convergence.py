@@ -16,7 +16,7 @@ start = timeit.default_timer()
 
 ## INITIAL CONDITIONS
 Amax = 30      # max age
-Tmax = 15      # max time
+Tmax = 20      # max time
 order = 2       # order of method
 Ntest = 5       # number of cases
 
@@ -42,25 +42,29 @@ dt = 0.5 * da
 
 # no mortality
 # folder = 'convergence/mortality/no_mortality/varied_dt/no-mortality'
+# k = 0
 # par = 0      # mortality parameter
 
 # constant mortality
-# folder = 'convergence/mortality/constant/varied_dt/half-constant'
+# folder = 'convergence/mortality/half_constant/varied_dt/half-constant'
+# k = 0
 # par = 0.5      # mortality parameter
-# folder = 'convergence/mortality/constant/varied_dt/tenth-constant'
-# par = 0.1      # mortality parameter
+## folder = 'convergence/mortality/constant/varied_dt/tenth-constant'
+## par = 0.1      # mortality parameter
 
 # linear mortality 
 # folder = 'convergence/mortality/linear/varied_dt/linear'
-# par = 1. / Amax
+# par = 1. 
 
 # logistic mortality
 # folder = 'convergence/mortality/logistic/varied_dt/logistic'
+# k = 0
 # par = 0.4 
 
 # hill mortality
 # folder = 'convergence/mortality/hill/varied_dt/hill'
-# par = 0 # doesn't matter
+# k = 0
+# par = 30. 
 
 
 ## TEST Reproduction ---------------------------------------------------
@@ -69,8 +73,9 @@ dt = 0.5 * da
 # constant reproduction
 # folder = 'convergence/reproduction/constant/varied_dt/tenth-constant'
 # k = 0.1     # reproduction parameter
-# folder = 'convergence/reproduction/constant/varied_dt/half-constant'
+# folder = 'convergence/reproduction/half_constant/varied_dt/half-constant'
 # k = 0.5     # reproduction parameter
+# par = 0.
 
 # logistic reproduction
 # folder = 'convergence/reproduction/logistic/varied_dt/logistic'
@@ -82,23 +87,53 @@ dt = 0.5 * da
 
 ## TEST Both ------------------------------------------------------------
 
-# constant 
-# folder = 'convergence/both/constant/varied_dt/both_constant'
-# k = 0.1        # reproduction parameter
+# # constant mortality and logistic reproduction
+# test = "constant_m_logistic_r"
+# folder = 'convergence/both/' + test +'/varied_dt/' + test
+# k = 1        # reproduction parameter
 # par = 0.05      # mortality parameter
 
-#logistic
-# folder = 'convergence/both/logistic/varied_dt/logistic_reproduction_'
-# folder = 'convergence/both/logistic/varied_dt/constant_zero_'
+# linear mortality and logistic reproduction
+# test = "linear_m_logistic_r"
+# folder = 'convergence/both/' + test +'/varied_dt/' + test
 # k = 1        # reproduction parameter
-# par = 0      # mortality parameter
+# par = .5      # mortality parameter
 
+# logistic mortality and logistic reproduction
+# test = "logistic_m_logistic_r"
+# folder = 'convergence/both/' + test +'/varied_dt/' + test
+# k = 1        # reproduction parameter
+# par = 0.4      # mortality parameter
 
-# Boundary Condition tests
-test = 'both'
-folder = 'convergence/boundarytest/' + test +'/varied_dt/' + test
+# hill mortality and logistic reproduction
+# test = "hill_m_logistic_r"
+# folder = 'convergence/both/' + test +'/varied_dt/' + test
+# k = 1        # reproduction parameter
+# par = 30.      # mortality parameter
+
+# # constant mortality and gaussian reproduction
+# test = "constant_m_gaussian_r"
+# folder = 'convergence/both/' + test +'/varied_dt/' + test
+# k = 1        # reproduction parameter
+# par = 0.05      # mortality parameter
+
+# linear mortality and gaussian reproduction
+# test = "linear_m_gaussian_r"
+# folder = 'convergence/both/' + test +'/varied_dt/' + test
+# k = 1        # reproduction parameter
+# par = .5      # mortality parameter
+
+# logistic mortality and gaussian reproduction
+test = "logistic_m_gaussian_r"
+folder = 'convergence/both/' + test +'/varied_dt/' + test
 k = 1        # reproduction parameter
-par = 0.2   # mortality parameter
+par = 0.4      # mortality parameter
+
+# hill mortality and gaussian reproduction
+# test = "hill_m_gaussian_r"
+# folder = 'convergence/both/' + test +'/varied_dt/' + test
+# k = 1        # reproduction parameter
+# par = 30.      # mortality parameter
 
 
 

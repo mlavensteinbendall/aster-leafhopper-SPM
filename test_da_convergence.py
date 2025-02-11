@@ -43,24 +43,29 @@ dt = 0.001
 # no mortality
 # folder = 'convergence/mortality/no_mortality/fixed_dt/no-mortality'
 # par = 0      # mortality parameter
+# k = 0
 
 # constant mortality
-# folder = 'convergence/mortality/constant/fixed_dt/half-constant'
+# folder = 'convergence/mortality/half_constant/fixed_dt/half-constant'
+# k = 0
 # par = 0.5      # mortality parameter
 # folder = 'convergence/mortality/constant/fixed_dt/tenth-constant'
+# k = 0
 # par = 0.1      # mortality parameter
 
 # linear mortality 
 # folder = 'convergence/mortality/linear/fixed_dt/linear'
-# par = 1. / Amax
+# par = 1. 
 
 # logistic mortality
 # folder = 'convergence/mortality/logistic/fixed_dt/logistic'
+# k = 0
 # par = 0.4 
 
 # hill mortality
 # folder = 'convergence/mortality/hill/fixed_dt/hill'
-# par = 0 # doesn't matter
+# k = 0.
+# par = 30.
 
 ## TEST Reproduction ---------------------------------------------------
 # have to go into function_model.py to change which mortality to test
@@ -68,8 +73,10 @@ dt = 0.001
 # constant reproduction
 # folder = 'convergence/reproduction/constant/fixed_dt/tenth-constant'
 # k = 0.1     # reproduction parameter
+# par = 0.
 # folder = 'convergence/reproduction/constant/fixed_dt/half-constant'
 # k = 0.5     # reproduction parameter
+# par = 0.
 
 # logistic reproduction
 # folder = 'convergence/reproduction/logistic/fixed_dt/logistic'
@@ -81,17 +88,53 @@ dt = 0.001
 
 ## TEST Both ------------------------------------------------------------
 
-# constant 
-# folder = 'convergence/both/constant/fixed_dt/both_constant'
-# k = 0.1        # reproduction parameter
+# constant mortality and logistic reproduction
+# test = "constant_m_logistic_r"
+# folder = 'convergence/both/' + test +'/fixed_dt/' + test
+# k = 1        # reproduction parameter
 # par = 0.05      # mortality parameter
 
+# linear mortality and logistic reproduction
+# test = "linear_m_logistic_r"
+# folder = 'convergence/both/' + test +'/fixed_dt/' + test
+# k = 1        # reproduction parameter
+# par = 0.5      # mortality parameter
 
-# Boundary Condition tests
-test = 'logistic'
-folder = 'convergence/boundarytest/' + test +'/fixed_dt/' + test
+# logistic mortality and logistic reproduction
+# test = "logistic_m_logistic_r"
+# folder = 'convergence/both/' + test +'/fixed_dt/' + test
+# k = 1          # reproduction parameter
+# par = 0.4      # mortality parameter
+
+# hill mortality and logistic reproduction
+# test = "hill_m_logistic_r"
+# folder = 'convergence/both/' + test +'/fixed_dt/' + test
+# k = 1        # reproduction parameter
+# par = 30.      # mortality parameter
+
+# constant mortality and gaussian reproduction
+# test = "constant_m_gaussian_r"
+# folder = 'convergence/both/' + test +'/fixed_dt/' + test
+# k = 1        # reproduction parameter
+# par = 0.05      # mortality parameter
+
+# linear mortality and gaussian reproduction
+# test = "linear_m_gaussian_r"
+# folder = 'convergence/both/' + test +'/fixed_dt/' + test
+# k = 1        # reproduction parameter
+# par = .5      # mortality parameter
+
+# logistic mortality and gaussian reproduction
+test = "logistic_m_gaussian_r"
+folder = 'convergence/both/' + test +'/fixed_dt/' + test
 k = 1        # reproduction parameter
-par = 0      # mortality parameter
+par = 0.4      # mortality parameter
+
+# hill mortality and gaussian reproduction
+# test = "hill_m_gaussian_r"
+# folder = 'convergence/both/' + test +'/fixed_dt/' + test
+# k = 1        # reproduction parameter
+# par = 30.      # mortality parameter
 
 # initalize time array
 time_num_points = int(Tmax / dt) + 1

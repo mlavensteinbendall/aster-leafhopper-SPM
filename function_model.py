@@ -6,9 +6,9 @@ from function_trapezoidal_rule import trapezoidal_rule
 
 def mortality(age, par):
     # return np.full(len(age), par)                 # constant
-    return   age /30                             # linear
-    # return 1 / (1 + np.exp(-0.5* (age - 18)) )    # logistic
-    # return (age / 15) * (30**2 / (30**2 + age**2)) # hill
+    # return  par * age /30                             # linear
+    return 1 / (1 + np.exp(-par* (age - 18)) )    # logistic
+    # return (age / 15) * (par**2 / (par**2 + age**2)) # hill
 
 def reproduction(N, age, da, par):
     """Calculate the reproduction 
@@ -32,13 +32,14 @@ def k_dep(age, par):
 
     for i in range(0, len(age)):
 
-        # reproduction_rate[i] =  par * np.exp(-(1/100000) * (age[i] - 20)**6)      # Gaussian
+        reproduction_rate[i] =  par * np.exp(-(1/100000) * (age[i] - 20)**6)      # Gaussian
         # reproduction_rate[i] = par / (1 + np.exp(-15 * (age[i] - 10)))            # Logistic but basiclly a constant
-        reproduction_rate[i] = 5 / (1 + np.exp(-1 * (age[i] - 20)))               # Logistic
-        # reproduction_rate[i] = 1 / (1 + np.exp(-1 * (age[i] - 13)))               # Logistic
-        # reproduction_rate[i] = 0                                                  # no reproduction
-
-        # reproduction_rate[i] = par            # constant
+        # reproduction_rate[i] = 5 / (1 + np.exp(-1 * (age[i] - 20)))               # Logistic
+        
+        # if age[i] >= 15:
+        # reproduction_rate[i] = par                                                  # no reproduction
+        # else:
+        #     reproduction_rate[0] = 0.
 
     return reproduction_rate
 

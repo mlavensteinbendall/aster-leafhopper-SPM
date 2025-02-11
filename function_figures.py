@@ -130,9 +130,11 @@ def first_time_solution(folder, i, da, dt):
 
 def plt_numerical_sol(analytical_sol, sol, data, age, time, da, dt, Ntime, index, folder):
 
+    # beep = len(time)
     # COMPARTISION PLOT BTWN NUMERICAL AND ANALYTICAL
     # get inidices of initial, middle, and last time step
-    plot_indices = [0, Ntime // 2, Ntime - 1]
+    # plot_indices = [0, (beep-1)//2, beep - 1]
+    plot_indices = [0, (Ntime) // 2, Ntime - 1]
 
     plt.close()
     # plot numerical and analytical solution
