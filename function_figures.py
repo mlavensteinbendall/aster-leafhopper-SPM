@@ -202,12 +202,12 @@ def plt_numerical_solution(age, time, da, dt, par, ntag, folder, save_rate):
 
     data = np.stack(solutions, axis = 0)
 
-    mu = mortality(age, par)
+    # mu = mortality(age, par)
 
     for t_index in plot_indices:
         # sol = np.exp(-(age - ( times[t_index] + 5))**2) * np.exp(-mu * times[t_index])  # constant mortality
         # sol = np.exp(-(age - ( times[t_index] + 5))**2) * np.exp( (-par * age * times[t_index]) + (par * times[t_index]**2 / 2) )  # linear mortality
-        sol = np.exp(-(age - ( times[t_index] + 5))**2) * np.exp(- (30 * np.log(age**2 + 30**2) - 30 * np.log((age - times[t_index])**2 +30**2))) # hill function
+        # sol = np.exp(-(age - ( times[t_index] + 5))**2) * np.exp(- (30 * np.log(age**2 + 30**2) - 30 * np.log((age - times[t_index])**2 +30**2))) # hill function
         # plt.plot(age, sol, label=f'Analytical at time {round(times[t_index], 1)  }', linestyle='-')     # analytical 
 
         plt.plot(age, data[t_index, :], label=f'Numerical at time  {round(times[t_index], 1)  }', linestyle=':')    # numerical 

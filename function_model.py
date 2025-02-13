@@ -117,7 +117,7 @@ def solveSPM(par, age, time, da, dt, k, filename, ntag, save_rate):
             k1        = - Ntemp2[a] * mu[a]                       # slope at the beginning of the time step (age = s)
             N_star    =   Ntemp2[a] + (dt / 4) * k1               # estimate N at the midpoint of the time step
             k2        = - N_star   * mu[a]                       # slope at the midpoint (age still = s)
-            N[a] =   Ntemp2[a] + (dt/2) * k2                     # update N for the full time step
+            N[a]      =   Ntemp2[a] + (dt/2) * k2                     # update N for the full time step
 
         # Boundary Condition
         N[0] = reproduction(N, age, da, k)
